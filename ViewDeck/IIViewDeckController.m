@@ -293,7 +293,7 @@ static NSTimeInterval durationToAnimate(CGFloat pointsToAnimate, CGFloat velocit
     _panningCancelsTouchesInView = YES; // let's default to standard IOS behavior.
     _navigationControllerBehavior = IIViewDeckNavigationControllerContained;
     _centerhiddenInteractivity = IIViewDeckCenterHiddenUserInteractive;
-    _sizeMode = IIViewDeckLedgeSizeMode;
+    _sizeMode = IIViewDeckViewSizeMode;
     _viewAppeared = 0;
     _viewFirstAppeared = NO;
     _resizesCenterView = NO;
@@ -955,6 +955,10 @@ static NSTimeInterval durationToAnimate(CGFloat pointsToAnimate, CGFloat velocit
 #pragma mark - Rotation IOS6
 
 - (BOOL)shouldAutorotate {
+    
+    if(floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_7_1 && [self presentedViewController])
+        return [self.presentedViewController shouldAutorotate];
+    
     _preRotationSize = self.referenceBounds.size;
     _preRotationCenterSize = self.centerView.bounds.size;
     _willAppearShouldArrangeViewsAfterRotation = self.interfaceOrientation;
@@ -968,6 +972,10 @@ static NSTimeInterval durationToAnimate(CGFloat pointsToAnimate, CGFloat velocit
 }
 
 - (NSUInteger)supportedInterfaceOrientations {
+    
+    if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_7_1 && self.presentedViewController)
+        return [self.presentedViewController supportedInterfaceOrientations];
+    
     if (self.centerController)
         return [self.centerController supportedInterfaceOrientations];
     
@@ -975,6 +983,10 @@ static NSTimeInterval durationToAnimate(CGFloat pointsToAnimate, CGFloat velocit
 }
 
 - (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation {
+    
+    if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_7_1 && self.presentedViewController)
+        return [self.presentedViewController preferredInterfaceOrientationForPresentation];
+    
     if (self.centerController)
         return [self.centerController preferredInterfaceOrientationForPresentation];
     
@@ -983,6 +995,10 @@ static NSTimeInterval durationToAnimate(CGFloat pointsToAnimate, CGFloat velocit
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
+    
+    if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_7_1 && self.presentedViewController)
+        return [self.presentedViewController shouldAutorotateToInterfaceOrientation:interfaceOrientation];
+    
     _preRotationSize = self.referenceBounds.size;
     _preRotationCenterSize = self.centerView.bounds.size;
     _preRotationIsLandscape = UIInterfaceOrientationIsLandscape([UIApplication sharedApplication].statusBarOrientation);
