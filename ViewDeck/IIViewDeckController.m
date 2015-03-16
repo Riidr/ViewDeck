@@ -283,6 +283,9 @@ static NSTimeInterval durationToAnimate(CGFloat pointsToAnimate, CGFloat velocit
 @synthesize centerTapperAccessibilityLabel = _centerTapperAccessibilityLabel;
 @synthesize centerTapperAccessibilityHint = _centerTapperAccessibilityHint;
 
+/**used to fix iPad bug: if you start in landscape the view deck frames are not laid out correctly*/
+static BOOL firstLaunchInLandscape = YES;
+
 #pragma mark - Initalisation and deallocation
 
 - (void)commonInitWithCenterViewController:(UIViewController *)centerController
@@ -458,9 +461,19 @@ static NSTimeInterval durationToAnimate(CGFloat pointsToAnimate, CGFloat velocit
 }
 
 - (CGRect)referenceBounds {
+    
+    CGRect screenRect = [UIScreen mainScreen].bounds;
+    
+    if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_7_1 && UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])) {
+        CGFloat width = screenRect.size.width;
+        CGFloat height = screenRect.size.height;
+        screenRect.size.width = height;
+        screenRect.size.height = width;
+    }
+    
     return self.referenceView
-        ? self.referenceView.bounds
-        : [[UIScreen mainScreen] bounds];
+    ? self.referenceView.bounds
+    : screenRect;
 }
 
 - (CGFloat)relativeStatusBarHeight {
@@ -3062,6 +3075,15 @@ static NSTimeInterval durationToAnimate(CGFloat pointsToAnimate, CGFloat velocit
     else {
         _slidingController = self.centerController;
         self.referenceView = self.view;
+        
+        /**bug fix for starting on iPad in landscape mode iPad ios7*/
+        if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_7_1 && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad && firstLaunchInLandscape && !self.isAnySideOpen &&  UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])) {
+            
+            self.referenceView.frame = CGRectMake(self.view.frame.origin.x, self.view.frame.origin.y, self.view.frame.size.height, self.view.frame.size.width);
+        }
+        
+        firstLaunchInLandscape = NO;
+        
         [self finishTransitionBlocks];
         return YES;
     }
