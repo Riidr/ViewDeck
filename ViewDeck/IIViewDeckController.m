@@ -1265,11 +1265,19 @@ static NSTimeInterval durationToAnimate(CGFloat pointsToAnimate, CGFloat velocit
 - (CGFloat)ledgeOffsetForSide:(IIViewDeckSide)viewDeckSide {
     switch (viewDeckSide) {
         case IIViewDeckLeftSide:
-            return MIN([[UIScreen mainScreen] bounds].size.width, [[UIScreen mainScreen] bounds].size.height) - _ledge[viewDeckSide];
+            if (_sizeMode == IIViewDeckLedgeSizeMode){
+                return self.referenceBounds.size.width - _ledge[viewDeckSide];
+            }else{
+                return MIN([[UIScreen mainScreen] bounds].size.width, [[UIScreen mainScreen] bounds].size.height) - _ledge[viewDeckSide];
+            }
             break;
             
         case IIViewDeckRightSide:
-            return _ledge[viewDeckSide] - MIN([[UIScreen mainScreen] bounds].size.width, [[UIScreen mainScreen] bounds].size.height);
+            if (_sizeMode == IIViewDeckLedgeSizeMode){
+                return _ledge[viewDeckSide] - self.referenceBounds.size.width;
+            }else{
+                return _ledge[viewDeckSide] - MIN([[UIScreen mainScreen] bounds].size.width, [[UIScreen mainScreen] bounds].size.height);
+            }
             break;
             
         case IIViewDeckTopSide:
@@ -2497,7 +2505,11 @@ static NSTimeInterval durationToAnimate(CGFloat pointsToAnimate, CGFloat velocit
     if (orientation == IIViewDeckHorizontalOrientation) {
         minSide = IIViewDeckLeftSide;
         maxSide = IIViewDeckRightSide;
-        max = MIN(self.referenceBounds.size.width, self.referenceBounds.size.height);
+        if (_sizeMode == IIViewDeckLedgeSizeMode){
+            max = self.referenceBounds.size.width;
+        }else{
+            max = MIN(self.referenceBounds.size.width, self.referenceBounds.size.height);
+        }
     }
     else {
         minSide = IIViewDeckTopSide;
@@ -2685,7 +2697,14 @@ static NSTimeInterval durationToAnimate(CGFloat pointsToAnimate, CGFloat velocit
 
 - (CGRect) getLeftParallax {
     CGFloat pv = self.slidingControllerView.frame.origin.x;
-    CGFloat diff = pv-(MIN(self.slidingControllerView.frame.size.width,self.slidingControllerView.frame.size.height)-_ledge[IIViewDeckLeftSide]);
+    
+    CGFloat diff;
+    if (_sizeMode == IIViewDeckLedgeSizeMode){
+        diff = pv-(self.slidingControllerView.frame.size.width-_ledge[IIViewDeckLeftSide]);
+    }else{
+        diff = pv-(MIN(self.slidingControllerView.frame.size.width,self.slidingControllerView.frame.size.height)-_ledge[IIViewDeckLeftSide]);
+    }
+
     if (diff > 0.0f) diff = 0.0f;
     
     return CGRectMake(diff*_parallaxAmount, self.leftController.view.frame.origin.y, self.leftController.view.frame.size.width, self.leftController.view.frame.size.height);
@@ -2693,7 +2712,13 @@ static NSTimeInterval durationToAnimate(CGFloat pointsToAnimate, CGFloat velocit
 
 - (CGRect) getRightParallax {
     CGFloat pv = self.slidingControllerView.frame.origin.x;
-    CGFloat diff = pv+(MIN(self.slidingControllerView.frame.size.width,self.slidingControllerView.frame.size.height)-_ledge[IIViewDeckRightSide]);
+    
+    CGFloat diff;
+    if (_sizeMode == IIViewDeckLedgeSizeMode){
+        diff = pv+(self.slidingControllerView.frame.size.width-_ledge[IIViewDeckRightSide]);
+    }else{
+        diff = pv+(MIN(self.slidingControllerView.frame.size.width,self.slidingControllerView.frame.size.height)-_ledge[IIViewDeckRightSide]);
+    }
     if (diff < 0.0f) diff = 0.0f;
     
     return CGRectMake(diff*_parallaxAmount, self.rightController.view.frame.origin.y, self.rightController.view.frame.size.width, self.rightController.view.frame.size.height);
