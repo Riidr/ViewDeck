@@ -312,7 +312,7 @@ static NSTimeInterval durationToAnimate(CGFloat pointsToAnimate, CGFloat velocit
     _panningCancelsTouchesInView = YES; // let's default to standard IOS behavior.
     _navigationControllerBehavior = IIViewDeckNavigationControllerContained;
     _centerhiddenInteractivity = IIViewDeckCenterHiddenUserInteractive;
-    _sizeMode = IIViewDeckViewSizeMode;
+    _sizeMode = IIViewDeckLedgeSizeMode;
     _viewAppeared = 0;
     _viewFirstAppeared = NO;
     _resizesCenterView = NO;
