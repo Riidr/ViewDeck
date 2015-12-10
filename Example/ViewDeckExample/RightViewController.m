@@ -27,7 +27,7 @@
 #import "RightViewController.h"
 #import "LeftViewController.h"
 #import "ViewController.h"
-#import "ViewDeck.h"
+#import <ViewDeck/ViewDeck.h>
 #import "NestViewController.h"
 #import "PushedViewController.h"
 #import <QuartzCore/QuartzCore.h>

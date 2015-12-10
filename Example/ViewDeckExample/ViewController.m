@@ -24,7 +24,7 @@
 //
 
 #import "ViewController.h"
-#import "ViewDeck.h"
+#import <ViewDeck/ViewDeck.h>
 
 @interface ViewController () <UIImagePickerControllerDelegate>
 

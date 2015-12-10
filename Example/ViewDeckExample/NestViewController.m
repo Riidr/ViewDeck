@@ -24,7 +24,7 @@
 //
 
 #import "NestViewController.h"
-#import "ViewDeck.h"
+#import <ViewDeck/ViewDeck.h>
 
 @implementation NestViewController
 

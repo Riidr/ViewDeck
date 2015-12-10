@@ -25,7 +25,7 @@
 
 
 #import "LeftViewController.h"
-#import "ViewDeck.h"
+#import <ViewDeck/ViewDeck.h>
 
 @implementation LeftViewController
 
